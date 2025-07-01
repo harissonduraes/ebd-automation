@@ -1,0 +1,3 @@
+- ```pip install selenium```
+- ```tkinter```
+- ```python -m venv venv```
