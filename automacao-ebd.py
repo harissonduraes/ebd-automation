@@ -53,25 +53,10 @@ def run_automation():
         log_message("Nenhum texto de participação fornecido. Automação cancelada.")
         return
 
-    # driver = None
-    # # Inicializa o WebDriver (usando Chrome como exemplo).
-    # # Se o chromedriver não estiver no PATH, especifique o caminho completo:
-    # # driver = webdriver.Chrome(executable_path="/caminho/para/seu/chromedriver")
-    # driver = webdriver.Chrome()
-    # driver.maximize_window()
-    # log_message("Navegando para a URL: " + URL)
-    # driver.get(URL)
-
-    # # Configura um tempo de espera explícito para elementos carregarem
-    # wait = WebDriverWait(driver, 20) # Espera até 20 segundos
-    
-
     # Loop para processar cada CPF na lista
     for i, cpf in enumerate(cpfs_para_automacao):
         driver = None
         # Inicializa o WebDriver (usando Chrome como exemplo).
-        # Se o chromedriver não estiver no PATH, especifique o caminho completo:
-        # driver = webdriver.Chrome(executable_path="/caminho/para/seu/chromedriver")
         driver = webdriver.Chrome()
         driver.maximize_window()
         # log_message("Navegando para a URL: " + URL)
@@ -80,47 +65,37 @@ def run_automation():
         # Configura um tempo de espera explícito para elementos carregarem
         wait = WebDriverWait(driver, 20) # Espera até 20 segundos
 
-        driver.execute_script("document.body.style.zoom='35%'")
-        # log_message(f"\n--- Processando CPF {i+1}/{len(cpfs_para_automacao)}: {cpf} ---")
-
         # Recarrega a página para garantir um formulário limpo para cada CPF
         driver.get(URL)
         # log_message("Página recarregada para o próximo CPF.")
-        driver.execute_script("document.body.style.zoom='35%'")
+        driver.execute_script("document.body.style.zoom='50%'")
 
         cpf_input = wait.until(EC.presence_of_element_located((By.NAME, "icm_member_cpf"))) # SUBSTITUA 'cpf_field_id' pelo ID real
 
         cpf_input.clear()
         cpf_input.send_keys(cpf)
-        # cpf_input.send_keys(Keys.ENTER)
         # log_message("CPF digitado e Enter pressionado. Aguardando carregamento de dados...")
-        time.sleep(5) # Pequena pausa para a página reagir e carregar dados
-        
-        # funcao_input_clickable = driver.find_element(By.XPATH, "/html/body/div[2]/main/div[2]/article/div/div/div/div/div/div/div/div/div/div[3]/div[4]/div[1]/div/div[1]/input")
-        # funcao_input_clickable.click()
+        time.sleep(4) # Pequena pausa para a página reagir e carregar dados
 
+        # FUNÇÃO
         funcao_input_clickable = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/main/div[2]/article/div/div/div/div/div/div/div/div/div/div[3]/div[4]/div[1]/div/div[1]/input")))
         funcao_input_clickable.click()
-
-        # trabalho_select_element = driver.find_element(By.XPATH, "/html/body/div[2]/main/div[2]/article/div/div/div/div/div/div/div/div/div/div[3]/div[4]/div[1]/div/div[2]/div/div[4]")
-        # trabalho_select_element.click()
 
         trabalho_select_element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/main/div[2]/article/div/div/div/div/div/div/div/div/div/div[3]/div[4]/div[1]/div/div[2]/div/div[4]"))) # SUBSTITUA 'trabalho_select_id'
         trabalho_select_element.click()
 
-        # log_message("Opção 'Membro' selecionada para Função.")
-
+        # MEMBRO
         trabalho_select_element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/main/div[2]/article/div/div/div/div/div/div/div/div/div/div[3]/div[4]/div[2]/div/div[1]/input"))) # SUBSTITUA 'trabalho_select_id'
         trabalho_select_element.click()
 
         trabalho_select_element = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/main/div[2]/article/div/div/div/div/div/div/div/div/div/div[3]/div[4]/div[2]/div/div[2]/div/div[1]")))
         trabalho_select_element.click()
 
-        # log_message("Trabalho 'Participação individual' selecionado.")
+        time.sleep(1)
+        driver.execute_script("window.scrollBy(0, 500);")
 
-        # radio_participacao = driver.find_element((By.XPATH, "/html/body/div[2]/main/div[2]/article/div/div/div/div/div/div/div/div/div/div[5]/div/div[1]/input[2]"))
-        # radio_participacao.is_selected()
-        # print("radio" + radio_participacao)
+        time.sleep(1)
+        driver.execute_script("window.scrollBy(0, 500);")
 
         # --- Passo 4: Clicar na bolinha de "Participação" (Radio Button) ---
         try:
@@ -152,7 +127,7 @@ def run_automation():
             # Se não inseriu, esta é a forma de fazê-lo:
             editor_div.clear() # Limpa o conteúdo existente (se houver)
             editor_div.send_keys(texto_participacao_gui)
-            print(f"Texto inserido no editor: '{texto_participacao_gui}'")
+            # print(f"Texto inserido no editor: '{texto_participacao_gui}'")
             time.sleep(1) # Pequena pausa para o JS do editor reagir
 
             # 3. Verificar se a classe ql-blank ainda existe
@@ -170,11 +145,15 @@ def run_automation():
 
         except Exception as e:
             print(f"Ocorreu um erro: {e}")
-            # driver.save_screenshot("erro_ql_editor.png") # Para depuraçãoepuração
+
+        time.sleep(1)
+        driver.execute_script("window.scrollBy(0, 500);")
+
+        time.sleep(1)
+        driver.execute_script("window.scrollBy(0, 500);")
 
         input_salvar = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/main/div[2]/article/div/div/div/div/div/div/div/div/div/button")))
         input_salvar.click()
-
         time.sleep(2) # Pausa para visualização
 
         if driver:
@@ -202,12 +181,6 @@ cpf_label.pack(anchor=tk.W, padx=10, pady=(10, 0))
 cpf_input_area = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=90, height=8, font=("Courier New", 10), bg="#f0f0f0", fg="#333")
 cpf_input_area.pack(padx=10, pady=5)
 
-# Adicione CPFs de exemplo para facilitar o teste
-# cpf_input_area.insert(tk.END, """111.111.111-11
-# 222.222.222-22
-# 333.333.333-33
-# """)
-
 # Campo para entrada do texto de participação
 texto_participacao_label = tk.Label(root, text="Texto da Participação:", font=("Arial", 12, "bold"))
 texto_participacao_label.pack(anchor=tk.W, padx=10, pady=(10, 0))
@@ -215,10 +188,6 @@ texto_participacao_label.pack(anchor=tk.W, padx=10, pady=(10, 0))
 # ATENÇÃO: Definindo as variáveis globais aqui
 texto_participacao_area = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=90, height=12, font=("Courier New", 10), bg="#f0f0f0", fg="#333")
 texto_participacao_area.pack(padx=10, pady=5)
-
-# Define um texto padrão para o campo de participação
-# texto_participacao_area.insert(tk.END, "Participação em aula da EBD conforme solicitação.")
-
 
 # Área de log
 log_label = tk.Label(root, text="Log de Automação:", font=("Arial", 12, "bold"))
